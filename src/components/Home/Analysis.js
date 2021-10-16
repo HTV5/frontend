@@ -8,7 +8,7 @@ export default function AnalysisView(props) {
 
   const { macros, vitamins, calories, totalCost } = props
 
-  return <View style={{ flexDirection: 'column', alignItems: 'center', width: '85%', alignSelf: 'center', backgroundColor: '#ffffff80', padding: 20, borderRadius: 10 }}>
+  return <View style={{ flexDirection: 'column', alignItems: 'center', width: '85%', alignSelf: 'center', backgroundColor: '#ffffff55', padding: 20, borderRadius: 10 }}>
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
       <Nutrition title={"Macros"} progress={macros} />
       <Nutrition title={"Vitamins"} progress={vitamins} />

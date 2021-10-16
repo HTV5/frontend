@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions'
 import { LinearGradient } from 'expo-linear-gradient'
+import { AntDesign } from '@expo/vector-icons';
 
 export default function DailyMeals(props) {
   const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
@@ -26,17 +27,34 @@ export default function DailyMeals(props) {
       }}
     />
 
-    <Text style={{
-      color: 'white',
-      fontSize: responsiveFontSize(5),
-      fontWeight: '300',
-      marginBottom: 60,
-      textAlign: 'center',
-      width: '100%'
-    }}>
-      Plan your days
-    </Text>
+    <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 60, }}>
 
+
+      <TouchableOpacity
+        onPress={() => {
+          props.navigation.goBack();
+        }}
+        style={{
+          padding: 10,
+          marginLeft: 10,
+          // position: 'absolute'
+          // backgroundColor: '#ffffff30'
+        }}>
+        <AntDesign name="back" size={24} color="white" />
+      </TouchableOpacity>
+
+      <Text style={{
+        flex: 1,
+        color: 'white',
+        fontSize: responsiveFontSize(5),
+        fontWeight: '300',
+        textAlign: 'center',
+        // width: '100%'
+      }}>
+        Plan your days
+      </Text>
+
+    </View>
     {
       days.map(day => {
 
