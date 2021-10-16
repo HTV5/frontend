@@ -1,5 +1,5 @@
 import React from 'react'
-import AnalysisView from './Home/Analysis';
+import AnalysisView from './Analysis';
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -21,16 +21,30 @@ export default function Home(props) {
 
         <Text style={styles.welcomeText}>Hello, Matt!</Text>
 
-            <AnalysisView {...dummyData} />
+        <AnalysisView {...dummyData} />
 
         <View style={{ flex: 1 }} />
 
         <Text style={styles.promptText}>Start planning your week 🥘</Text>
 
         <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} ><Text style={styles.buttonText}>Daily meals</Text></TouchableOpacity>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                    props.navigation.navigate("DailyMeals")
+                }}
+            >
+                <Text style={styles.buttonText}>Daily meals</Text>
+            </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} ><Text style={styles.buttonText}>Grocery list</Text></TouchableOpacity>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                    props.navigation.navigate("GroceryList")
+                }}
+            >
+                <Text style={styles.buttonText}>Grocery list</Text>
+            </TouchableOpacity>
         </View>
 
     </SafeAreaView>
@@ -42,7 +56,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         height: '100%',
-        backgroundColor: 'black'
     },
     background: {
         position: 'absolute',
