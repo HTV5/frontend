@@ -16,12 +16,12 @@ export default function App() {
       tx.executeSql(
         "CREATE TABLE IF NOT EXISTS GroceryList (id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, weight FLOAT, price FLOAT)"
       );
-      
+
       tx.executeSql(
         "CREATE TABLE IF NOT EXISTS Diets (id INTEGER PRIMARY KEY AUTOINCREMENT, diet TEXT, macros FLOAT, vitamins FLOAT, calories FLOAT)"
       );
       tx.executeSql(
-        "INSERT INTO Diets(diet, macros, vitamins, calories) VALUES ('WeightLoss', 50, 5, 1200)"
+        "INSERT INTO Diets(diet, macros, vitamins, calories) SELECT 'WeightLoss', 50, 5, 1200 WHERE NOT EXISTS(SELECT * FROM Diets)"
       )
 
       tx.executeSql(
