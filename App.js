@@ -17,6 +17,14 @@ export default function App() {
       tx.executeSql(
         "CREATE TABLE IF NOT EXISTS GroceryList (id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, weight FLOAT, price FLOAT)"
       );
+      // tx.executeSql(
+      //   // "INSERT INTO GroceryList (item, weight, price) VALUES ('apples', 200, 3), ('oranges', 120, 3), ('ice cream', 300, 3);", [],
+      //   // "DELETE FROM GroceryList;",[],
+      //   // "select * from GroceryList", [],
+
+      //   console.log,
+      //   console.error
+      // )
 
       tx.executeSql(
         "CREATE TABLE IF NOT EXISTS Diets (id INTEGER PRIMARY KEY AUTOINCREMENT, diet TEXT, macros FLOAT, vitamins FLOAT, calories FLOAT)"
@@ -26,7 +34,7 @@ export default function App() {
       )
 
       tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS DailyMeals (id INTEGER PRIMARY KEY AUTOINCREMENT, day TEXT, week INTEGER, meal TEXT, item TEXT, weight FLOAT, macros FLOAT, vitamins FLOAT, calories FLOAT)"
+        "CREATE TABLE IF NOT EXISTS DailyMeals (day TEXT, week INTEGER, meal TEXT, item TEXT, weight FLOAT, macros FLOAT, vitamins FLOAT, calories FLOAT, UNIQUE(day, week, meal, item))"
       );
 
     });
