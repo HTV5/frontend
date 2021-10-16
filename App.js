@@ -26,10 +26,12 @@ export default function App() {
       )
 
       tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS DailyMeals (id INTEGER PRIMARY KEY AUTOINCREMENT, day TEXT, week INTEGER, meal TEXT, item TEXT, weight FLOAT, macros FLOAT, vitamins FLOAT, calories FLOAT"
+        "CREATE TABLE IF NOT EXISTS DailyMeals (id INTEGER PRIMARY KEY AUTOINCREMENT, day TEXT, week INTEGER, meal TEXT, item TEXT, weight FLOAT, macros FLOAT, vitamins FLOAT, calories FLOAT)"
       );
+
     });
   }, [])
+
   return <NavigationContainer>
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={Home} />
