@@ -12,11 +12,22 @@ const Stack = createNativeStackNavigator();
 export default function App() {
 
   useEffect(() => {
-    // db.transaction((tx) => {
-    //   tx.executeSql(
-    //     "CREATE TABLE IF NOT EXISTS entries (id INTEGER PRIMARY KEY AUTOINCREMENT, photo TEXT, journal TEXT, emotions TEXT, date TEXT, timestamp DATETIME)"
-    //   );
-    // });
+    db.transaction((tx) => {
+      tx.executeSql(
+        "CREATE TABLE IF NOT EXISTS GroceryList (id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, weight FLOAT, price FLOAT)"
+      );
+      
+      tx.executeSql(
+        "CREATE TABLE IF NOT EXISTS Diets (id INTEGER PRIMARY KEY AUTOINCREMENT, diet TEXT, macros FLOAT, vitamins FLOAT, calories FLOAT)"
+      );
+      tx.executeSql(
+        "INSERT INTO Diets(diet, macros, vitamins, calories) VALUES ('WeightLoss', 50, 5, 1200)"
+      )
+
+      tx.executeSql(
+        "CREATE TABLE IF NOT EXISTS DailyMeals (id INTEGER PRIMARY KEY AUTOINCREMENT, day TEXT, week INTEGER, meal TEXT, item TEXT, weight FLOAT, macros FLOAT, vitamins FLOAT, calories FLOAT"
+      );
+    });
   }, [])
   return <NavigationContainer>
     <Stack.Navigator screenOptions={{ headerShown: false }}>
