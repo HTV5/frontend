@@ -5,7 +5,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Home(props) {
     const dummyData = {
-        nutritionLevel: Math.random(),
+        macros: Math.random(),
+        vitamins: Math.random(),
+        calories: Math.random(),
         totalCost: 74.5
     }
 
@@ -18,6 +20,10 @@ export default function Home(props) {
         />
 
         <Text style={styles.welcomeText}>Hello, Matt!</Text>
+
+            <AnalysisView {...dummyData} />
+
+        <View style={{ flex: 1 }} />
 
         <Text style={styles.promptText}>Start planning your week 🥘</Text>
 
@@ -32,17 +38,18 @@ export default function Home(props) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%'
+        justifyContent: 'flex-start',
+        height: '100%',
+        backgroundColor: 'black'
     },
     background: {
         position: 'absolute',
         left: 0,
         right: 0,
         top: 0,
-        height: '100%',
+        height: '150%',
     },
     welcomeText: {
         backgroundColor: 'transparent',
@@ -50,7 +57,7 @@ const styles = StyleSheet.create({
         fontSize: 50,
         color: '#fff',
         fontFamily: "sans-serif-light",
-        bottom: '25%'
+        flex: 1,
     },
 
     promptText: {
@@ -58,17 +65,14 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: '#fff',
         fontFamily: "sans-serif-light",
-        bottom: '-15%'
-
+        marginBottom: 30
     },
 
     buttonContainer: {
         flexDirection: 'row',
-        bottom: '-40%'
-
+        marginBottom: 50
     },
     button: {
-        marginBottom: 30,
         width: 140,
         alignItems: 'center',
         backgroundColor: '#2196F3',
