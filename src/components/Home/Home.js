@@ -2,14 +2,36 @@ import React from 'react'
 import AnalysisView from './Analysis';
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { db } from '../../logic/db';
 
 export default function Home(props) {
-    const dummyData = {
-        macros: Math.random(),
-        vitamins: Math.random(),
-        calories: Math.random(),
-        totalCost: 74.5
-    }
+
+    const [data, setData] = useState({
+        macros: 1,
+        vitamins: 1,
+        calories: 1,
+        totalCost:10
+    })
+
+    useEffect(() => {
+        db.transaction((tx) => {
+            tx.executeSql("SELECT macros, vitamins, calories from Diets WHERE diet = 'WeightLoss'", [],
+            // tx.executeSql("SELECT * from Diets", [],
+                (_, { rows }) => {
+                    console.log(rows)
+                    let cp = {... data}
+                    cp.macros = rows._array[0]["macros"]
+                    cp.vitamins = rows._array[0]["vitamins"]
+                    cp.calories = rows._array[0]["calories"]
+                    setData(cp)
+                },
+                console.error
+            )
+        });
+
+    }, [])
 
     return <SafeAreaView style={styles.container}>
 
@@ -21,7 +43,7 @@ export default function Home(props) {
 
         <Text style={styles.welcomeText}>Hello, Matt!</Text>
 
-        <AnalysisView {...dummyData} />
+        <AnalysisView {...data} />
 
         <View style={{ flex: 1 }} />
 
