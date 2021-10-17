@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { AntDesign } from '@expo/vector-icons';
 import { db } from '../../logic/db';
 import { Picker } from '@react-native-picker/picker';
+import { getStats } from '../../logic/nutrition';
 
 
 export default function MealPlanning(props) {
@@ -42,17 +43,17 @@ export default function MealPlanning(props) {
   }, [])
 
   useEffect(() => {
-    console.log(calculateCurrentWeight(selectedItem))
     setselectedvalue(calculateCurrentWeight(selectedItem))
   }, [meal, items])
 
-  function addItemToMeal(v) {
+  async function addItemToMeal(v) {
     if (selectedvalue === 0) return
+    const {protein, carbs, fat, calories, fiber, potassium, sodium} = await getStats(v, items[selectedItem].item)
     db.transaction(
       (tx) => {
         tx.executeSql(
-          "INSERT OR REPLACE INTO DailyMeals (day, week, meal, item, weight) VALUES (?, ?, ?, ?, ?)",
-          [day, 0, 0, items[selectedItem].item, v],
+          "INSERT OR REPLACE INTO DailyMeals (day, week, meal, item, weight, macros, vitamins, calories) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+          [day, 0, 0, items[selectedItem].item, v, protein + carbs + fat, potassium + sodium + fiber, calories ],
           (_, { rows }) => {
           },
           console.error

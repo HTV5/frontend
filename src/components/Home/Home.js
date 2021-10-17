@@ -12,24 +12,30 @@ export default function Home(props) {
         macros: 1,
         vitamins: 1,
         calories: 1,
-        totalCost:10
+        totalCost:1
     })
 
     useEffect(() => {
+        const cp = {... data}
+
         db.transaction((tx) => {
             tx.executeSql("SELECT macros, vitamins, calories from Diets WHERE diet = 'WeightLoss'", [],
             // tx.executeSql("SELECT * from Diets", [],
                 (_, { rows }) => {
                     console.log(rows)
-                    let cp = {... data}
                     cp.macros = rows._array[0]["macros"]
                     cp.vitamins = rows._array[0]["vitamins"]
                     cp.calories = rows._array[0]["calories"]
-                    setData(cp)
                 },
                 console.error
             )
+            tx.executeSql("SELECT SUM(price) as p FROM GroceryList WHERE TRUE", [], (_, { rows }) => {
+                cp.totalCost = rows._array[0]['p']
+            })
+        }, console.error, () => {
+            setData(cp)
         });
+
 
     }, [])
 

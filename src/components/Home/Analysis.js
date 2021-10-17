@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Text, View } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 import { Circle } from 'react-native-progress'
 import { responsiveFontSize } from 'react-native-responsive-dimensions'
 import { db } from '../../logic/db';
@@ -19,14 +19,18 @@ export default function AnalysisView(props) {
 
   //Get today's total macros, vitamins and calories so you can divide them by respective values above
   useEffect(() => {
+    calc()
+  }, [])
+
+  function calc() {
     const cp = { ...data }
 
     db.transaction((tx) => {
       tx.executeSql("SELECT SUM(macros) from DailyMeals WHERE day = 'SUN' GROUP BY day", [],
         // tx.executeSql("SELECT * from Diets", [],
         (_, { rows }) => {
-          console.log(rows._array[0]["SUM(macros)"])
           cp.currentMacros = rows._array[0]["SUM(macros)"]
+          console.log(cp.currentMacros)
         },
         console.error
       );
@@ -35,6 +39,7 @@ export default function AnalysisView(props) {
         // tx.executeSql("SELECT * from Diets", [],
         (_, { rows }) => {
           cp.currentVitamins = rows._array[0]["SUM(vitamins)"]
+          console.log( cp.currentVitamins)
         },
         console.error
       );
@@ -43,15 +48,20 @@ export default function AnalysisView(props) {
         // tx.executeSql("SELECT * from Diets", [],
         (_, { rows }) => {
           cp.currentCalories = rows._array[0]["SUM(calories)"]
+          console.log(cp.currentCalories)
         },
         console.error
       );
     })
     setData(cp)
-  }, [])
+  }
 
 
-  return <View style={{ flexDirection: 'column', alignItems: 'center', width: '85%', alignSelf: 'center', backgroundColor: '#ffffff55', padding: 20, borderRadius: 10 }}>
+  return <TouchableOpacity
+    onPress={() => {
+      calc()
+    }}
+    style={{ flexDirection: 'column', alignItems: 'center', width: '85%', alignSelf: 'center', backgroundColor: '#ffffff55', padding: 20, borderRadius: 10 }}>
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
       <Nutrition title={"Macros"} progress={data.currentMacros / macros} />
       <Nutrition title={"Vitamins"} progress={data.currentVitamins / vitamins} />
@@ -80,7 +90,7 @@ export default function AnalysisView(props) {
 
     </View>
 
-  </View>
+  </TouchableOpacity>
 }
 
 function Nutrition(props) {
@@ -97,7 +107,6 @@ function Nutrition(props) {
       thickness={2}
       showsText={true}
       textStyle={{ fontSize: responsiveFontSize(2) }}
-      formatText={n => { return `${Math.round(n * 100)}% ` }}
       indeterminate={props.progress ? false : true}
       color='white'
     />
