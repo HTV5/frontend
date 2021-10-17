@@ -23,9 +23,9 @@ export default function Home(props) {
             // tx.executeSql("SELECT * from Diets", [],
                 (_, { rows }) => {
                     console.log(rows)
-                    cp.macros = rows._array[0]["macros"]
-                    cp.vitamins = rows._array[0]["vitamins"]
-                    cp.calories = rows._array[0]["calories"]
+                    cp.macros = rows._array[0]["macros"] * 7
+                    cp.vitamins = rows._array[0]["vitamins"] * 7
+                    cp.calories = rows._array[0]["calories"] * 7
                 },
                 console.error
             )
@@ -48,6 +48,7 @@ export default function Home(props) {
         />
 
         <Text style={styles.welcomeText}>Hello, Matt!</Text>
+        <Text style={styles.welcomeText2}>Here is your weekly summary</Text>
 
         <AnalysisView {...data} />
 
@@ -99,6 +100,15 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontFamily: "sans-serif-light",
         flex: 1,
+    },
+    welcomeText2: {
+        backgroundColor: 'transparent',
+        padding: 20,
+        fontSize: 30,
+        color: '#fff',
+        fontFamily: "sans-serif-light",
+        fontWeight: '300',
+        flex: 0,
     },
 
     promptText: {

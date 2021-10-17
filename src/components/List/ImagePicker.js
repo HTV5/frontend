@@ -7,7 +7,20 @@ export default function ImagePickerExample(props) {
 
   const [loading, setloading] = useState(false)
   const data = [
-    ["apple pie", "600", "8"],
+    ["asparagus", "500", "4"],
+    ["tomato", "300", "2"],
+    ["mushroom", "150", "4.32"],
+    ["butter", "454", "5"],
+    ["rice", "1400", "9"],
+    ["eggs", "700", "8"],
+    ["potato", "800", "3"],
+    ["carrots", "700", "4"],
+    ["cucumbers", "150", "2"],
+    ["onion", "200", "1.50"],
+    ["pepper", "340", "3"],
+    ["celery", "500", "4"],
+    ["milk", "1000", "4"],
+    ["lettuce", "450", "3"],
 
   ]
 

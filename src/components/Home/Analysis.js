@@ -26,29 +26,35 @@ export default function AnalysisView(props) {
     const cp = { ...data }
 
     db.transaction((tx) => {
-      tx.executeSql("SELECT SUM(macros) from DailyMeals WHERE day = 'SUN' GROUP BY day", [],
+      tx.executeSql("SELECT SUM(macros) from DailyMeals GROUP BY week", [],
         // tx.executeSql("SELECT * from Diets", [],
         (_, { rows }) => {
-          cp.currentMacros = rows._array[0]["SUM(macros)"]
-          console.log(cp.currentMacros)
+          if (rows.length) {
+
+            cp.currentMacros = rows._array[0]["SUM(macros)"]
+          }
         },
         console.error
       );
 
-      tx.executeSql("SELECT SUM(vitamins) from DailyMeals WHERE day = 'SUN' GROUP BY day", [],
+      tx.executeSql("SELECT SUM(vitamins) from DailyMeals GROUP BY week", [],
         // tx.executeSql("SELECT * from Diets", [],
         (_, { rows }) => {
-          cp.currentVitamins = rows._array[0]["SUM(vitamins)"]
-          console.log( cp.currentVitamins)
+          if (rows.length) {
+            cp.currentVitamins = rows._array[0]["SUM(vitamins)"]
+          }
         },
         console.error
       );
 
-      tx.executeSql("SELECT SUM(calories) from DailyMeals WHERE day = 'SUN' GROUP BY day", [],
+      tx.executeSql("SELECT SUM(calories) from DailyMeals GROUP BY week", [],
         // tx.executeSql("SELECT * from Diets", [],
         (_, { rows }) => {
-          cp.currentCalories = rows._array[0]["SUM(calories)"]
-          console.log(cp.currentCalories)
+          if (rows.length) {
+
+            cp.currentCalories = rows._array[0]["SUM(calories)"]
+            console.log(cp.currentCalories)
+          }
         },
         console.error
       );
@@ -72,7 +78,7 @@ export default function AnalysisView(props) {
 
       <View style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
         <Text style={{ fontSize: responsiveFontSize(2.3), color: 'white' }}>
-          Total cost
+          This week
         </Text>
         <Text style={{ color: 'white', fontSize: responsiveFontSize(3.3), fontWeight: 'bold' }}>
           $ {totalCost}
@@ -81,7 +87,7 @@ export default function AnalysisView(props) {
 
       <View style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
         <Text style={{ fontSize: responsiveFontSize(2.3), color: 'white' }}>
-          Per day
+          Daily
         </Text>
         <Text style={{ color: 'white', fontSize: responsiveFontSize(3.3), fontWeight: 'bold' }}>
           $ {(totalCost / 7).toFixed(2)}

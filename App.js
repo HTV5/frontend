@@ -19,7 +19,7 @@ export default function App() {
       );
       // tx.executeSql(
       //   // "INSERT INTO GroceryList (item, weight, price) VALUES ('apples', 200, 3), ('oranges', 120, 3), ('ice cream', 300, 3);", [],
-      //   // "DELETE FROM GroceryList;",[],
+      //   "DELETE FROM DailyMeals",[],
       //   // "select * from GroceryList", [],
 
       //   console.log,
