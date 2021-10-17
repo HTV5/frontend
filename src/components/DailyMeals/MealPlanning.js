@@ -1,18 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { FlatList, Picker, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import Slider from '@react-native-community/slider';
 import { responsiveFontSize, responsiveScreenHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import { LinearGradient } from 'expo-linear-gradient'
 import { AntDesign } from '@expo/vector-icons';
-import { Modalize } from 'react-native-modalize';
 import { db } from '../../logic/db';
+import { Picker } from '@react-native-picker/picker';
+
 
 export default function MealPlanning(props) {
   const { day } = props.route.params
 
   const [meal, setmeal] = useState([])
-  const [meals, setmeals] = useState([])
-  const [mealNum, setmealNum] = useState(0)
   const [items, setitems] = useState([])
   const [usage, setusage] = useState([])
   const [selectedItem, setselectedItem] = useState(0)
@@ -20,55 +19,55 @@ export default function MealPlanning(props) {
 
   useEffect(() => {
     db.transaction((tx) => {
+      tx.executeSql("SELECT * FROM DailyMeals WHERE day = ? AND week = ? AND meal = ?", [day, 0, 0],
+        (_, { rows }) => {
+          setmeal(rows._array)
+          // console.log("meal: ", rows._array)
+        }
+      )
       tx.executeSql("SELECT * FROM GroceryList", [],
         (_, { rows }) => {
           setitems(rows._array)
           if (rows._array) setselectedItem(0)
-        }
+        },
+        console.error
       )
       tx.executeSql("SELECT item, SUM(weight) as weight FROM DailyMeals GROUP BY item", [],
         (_, { rows }) => {
           setusage(rows._array)
-          console.log(rows._array)
+          // console.log(rows._array)
         }
       )
     })
   }, [])
 
-  const modalizeRef = useRef(null);
-  const onOpen = () => {
-    modalizeRef.current?.open();
-  };
-
   useEffect(() => {
-    setselectedvalue(calculateCurrentWeight(0))
-  }, [meal])
+    console.log(calculateCurrentWeight(selectedItem))
+    setselectedvalue(calculateCurrentWeight(selectedItem))
+  }, [meal, items])
 
-  function addMeal() {
-    db.transaction(
-      tx => {
-        tx.executeSql("SELECT * FROM DailyMeals WHERE day = ? AND week = ? AND meal = ?", [day, 0, meals.length],
-          (_, { rows }) => {
-            setmeal(rows._array)
-            console.log("meal: ", rows._array)
-          }
-        )
-      }
-    )
-    onOpen();
-  }
-
-  function addItemToMeal() {
+  function addItemToMeal(v) {
     if (selectedvalue === 0) return
-    console.log(items[selectedItem].item)
     db.transaction(
       (tx) => {
         tx.executeSql(
-          "INSERT OR REPLACE INTO DailyMeals (day, week, meal, item, weight) VALUES (?, ?, ?, ?, ?)", [day, 0, mealNum, items[selectedItem].item, selectedvalue],
+          "INSERT OR REPLACE INTO DailyMeals (day, week, meal, item, weight) VALUES (?, ?, ?, ?, ?)",
+          [day, 0, 0, items[selectedItem].item, v],
           (_, { rows }) => {
-
           },
           console.error
+        )
+        tx.executeSql("SELECT * FROM DailyMeals WHERE day = ? AND week = ? AND meal = ?", [day, 0, 0],
+          (_, { rows }) => {
+            setmeal(rows._array)
+            // console.log("meal: ", rows._array)
+          }
+        )
+        tx.executeSql("SELECT item, SUM(weight) as weight FROM DailyMeals GROUP BY item", [],
+          (_, { rows }) => {
+            setusage(rows._array)
+            // console.log(rows._array)
+          }
         )
       }
     )
@@ -85,7 +84,7 @@ export default function MealPlanning(props) {
         if (i.item === item.item)
           used = i['weight']
       })
-      console.log(item.weight, used, calculateCurrentWeight(ind))
+      // console.log(item.weight, used, calculateCurrentWeight(ind))
       return item.weight - used + calculateCurrentWeight(ind)
     }
 
@@ -95,7 +94,7 @@ export default function MealPlanning(props) {
   function calculateCurrentWeight(ind) {
     let ret = 0
     meal.map(i => {
-      if (i.item === items[ind].item)
+      if (i.item === items[ind]?.item)
         ret = i.weight
     })
 
@@ -111,51 +110,6 @@ export default function MealPlanning(props) {
     height: '100%',
     width: '100%',
   }}>
-    <Modalize
-      ref={modalizeRef}
-      modalTopOffset={responsiveScreenHeight(30)}
-    >
-      <Picker
-        selectedValue={selectedItem}
-        onValueChange={(v, i) => {
-          setselectedItem(i)
-          setselectedvalue(calculateCurrentWeight(i))
-        }}
-      >
-        {
-          items.map((item, index) => (
-            <Picker.Item label={item.item} value={index} key={item} />
-          ))
-        }
-      </Picker>
-
-      <Slider
-        style={{ width: '80%', alignSelf: 'center' }}
-        step={1}
-        maximumValue={calculateAvailableWeight(selectedItem)}
-        onSlidingComplete={v => {
-          addItemToMeal(v)
-        }}
-        value={selectedvalue}
-        onValueChange={v => {
-          setselectedvalue(v)
-        }}
-      />
-      <Text style={{ textAlign: 'center' }}>
-        {selectedvalue}g / {calculateAvailableWeight(selectedItem) + ""}g
-      </Text>
-
-      <Text style={{textAlign: 'center', fontSize: responsiveFontSize(3.5), marginTop: 70, marginBottom: 20}}>
-        Meal {mealNum + 1} contents
-      </Text>
-      <FlatList 
-        data={meal}
-        renderItem={({item}) => {
-          console.log("item: ", item)
-          return <Text key={item.item} style={{textAlign: 'center', fontSize: responsiveFontSize(2)}}>{item.item} - {item.weight}g</Text>
-        }}
-      />
-    </Modalize>
 
     <LinearGradient
       // Background Linear Gradient
@@ -202,7 +156,53 @@ export default function MealPlanning(props) {
       Plan your meals for the day
     </Text>
 
-    <View>
+    <View width={'95%'} style={{borderWidth: 1, padding: 20, borderRadius: 5, borderColor: 'white', backgroundColor: '#ffffff30'}}>
+
+      <Picker
+        selectedValue={selectedItem}
+        onValueChange={(v, i) => {
+          setselectedItem(i)
+          setselectedvalue(calculateCurrentWeight(i))
+        }}
+        style={{ backgroundColor: '#ffffff99', borderRadius: 5 }}
+      >
+        {
+          items.map((item, index) => (
+            <Picker.Item label={item.item} value={index} key={item} />
+          ))
+        }
+      </Picker>
+
+      <Slider
+        style={{ width: '80%', alignSelf: 'center' }}
+        step={1}
+        maximumValue={calculateAvailableWeight(selectedItem)}
+        minimumTrackTintColor={'white'}
+        maximumTrackTintColor={'#ffffff40'}
+        onSlidingComplete={v => {
+          setselectedvalue(v)
+          addItemToMeal(v)
+        }}
+        value={selectedvalue}
+        onValueChange={v => {
+        }}
+      />
+      <Text style={{ textAlign: 'center', color: 'white', textShadowOffset: { width: -2, height: 2 }, textShadowColor: 'rgba(0, 0, 0, 0.3)', textShadowRadius: 3 }}>
+        {items[selectedItem].item} - {selectedvalue}g / {calculateAvailableWeight(selectedItem) + ""}g
+      </Text>
+    </View>
+
+    <Text style={{ textAlign: 'center', fontSize: responsiveFontSize(3.5), marginTop: 70, marginBottom: 20, color: 'white' }}>
+      Meal contents
+    </Text>
+    <FlatList
+      data={meal}
+      renderItem={({ item }) => {
+        return <Text key={item.item} style={{ textAlign: 'center', fontSize: responsiveFontSize(2), color: 'white' }}>{item.item} - {item.weight}g</Text>
+      }}
+    />
+
+    {/* <View>
       <TouchableOpacity
         onPress={() => {
           addMeal()
@@ -219,6 +219,6 @@ export default function MealPlanning(props) {
         }}>
         <AntDesign name="plus" size={30} color="white" />
       </TouchableOpacity>
-    </View>
+    </View> */}
   </SafeAreaView>
 }

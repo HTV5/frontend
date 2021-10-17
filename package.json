@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@react-native-community/slider": "3.0.3",
+    "@react-native-picker/picker": "1.16.1",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.4",
     "expo": "~42.0.1",
