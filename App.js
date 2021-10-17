@@ -14,17 +14,13 @@ export default function App() {
 
   useEffect(() => {
     db.transaction((tx) => {
-
-      //       tx.executeSql("DROP TABLE GroceryList;", [], console.log, console.error)
-      // tx.executeSql("DROP TABLE Diets;", [], console.log, console.error)
-      // tx.executeSql("DROP TABLE DailyMeals;", [], console.log, console.error)
       tx.executeSql(
         "CREATE TABLE IF NOT EXISTS GroceryList (id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, weight FLOAT, price FLOAT)"
       );
       // tx.executeSql(
-        // "INSERT INTO GroceryList (item, weight, price) VALUES ('apples', 200, 3), ('oranges', 120, 3), ('ice cream', 300, 3);", [],
-        // "DELETE FROM GroceryList;",[],
-        // "select * from GroceryList", [],
+      //   // "INSERT INTO GroceryList (item, weight, price) VALUES ('apples', 200, 3), ('oranges', 120, 3), ('ice cream', 300, 3);", [],
+      //   // "DELETE FROM GroceryList;",[],
+      //   // "select * from GroceryList", [],
 
       //   console.log,
       //   console.error
