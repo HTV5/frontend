@@ -29,7 +29,7 @@ export default function Home(props) {
                 },
                 console.error
             )
-            tx.executeSql("SELECT SUM(price) as p FROM GroceryList WHERE TRUE", [], (_, { rows }) => {
+            tx.executeSql("SELECT SUM(price) as p FROM GroceryList WHERE price > 0", [], (_, { rows }) => {
                 cp.totalCost = rows._array[0]['p']
             })
         }, console.error, () => {
