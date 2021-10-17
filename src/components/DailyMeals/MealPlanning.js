@@ -188,7 +188,7 @@ export default function MealPlanning(props) {
         }}
       />
       <Text style={{ textAlign: 'center', color: 'white', textShadowOffset: { width: -2, height: 2 }, textShadowColor: 'rgba(0, 0, 0, 0.3)', textShadowRadius: 3 }}>
-        {items[selectedItem].item} - {selectedvalue}g / {calculateAvailableWeight(selectedItem) + ""}g
+        {items[selectedItem]?.item} - {selectedvalue}g / {calculateAvailableWeight(selectedItem) + ""}g
       </Text>
     </View>
 
