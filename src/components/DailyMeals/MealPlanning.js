@@ -64,6 +64,7 @@ export default function MealPlanning(props) {
     db.transaction(
       (tx) => {
         tx.executeSql(
+          
           "INSERT OR REPLACE INTO DailyMeals (day, week, meal, item, weight) VALUES (?, ?, ?, ?, ?)", [day, 0, mealNum, items[selectedItem].item, selectedvalue],
           (_, { rows }) => {
 
